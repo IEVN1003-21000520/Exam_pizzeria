@@ -1,12 +1,14 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { PedidoComponent } from './pizzeria/pedido/pedido';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.css',
-  templateUrl: './app.html',
+  standalone: true,
+  imports: [CommonModule, PedidoComponent],
+  template: `<app-pedido></app-pedido>`,
+  styleUrls: ['./app.css']
 })
 export class App {
-  protected readonly title = signal('Exam_pizzeria');
+  title = 'Exam_pizzeria';
 }

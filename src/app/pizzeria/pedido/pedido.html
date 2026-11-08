@@ -1,0 +1,173 @@
+<div class="max-w-4xl mx-auto p-6 bg-slate-50 min-h-screen relative">
+  <h1 class="text-3xl font-bold text-slate-800 mb-6 text-center">Gestión de Pedidos - Pizzería</h1>
+
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6 border border-slate-200">
+    <h2 class="text-xl font-semibold text-slate-700 mb-4">1. Datos del Cliente</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Nombre del Cliente</label>
+        <input type="text" [(ngModel)]="nombreCliente" placeholder="Ej. Juan Pérez" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Teléfono</label>
+        <input type="text" [(ngModel)]="telefono" placeholder="Ej. 4774744517" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-slate-600 mb-1">Dirección de Entrega</label>
+        <input type="text" [(ngModel)]="direccion" placeholder="Ej. Cerrada Mateo de Prado #106" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6 border border-slate-200">
+    <h2 class="text-xl font-semibold text-slate-700 mb-4">2. Agregar Pizzas a la Orden</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Tamaño</label>
+        <select [(ngModel)]="pizzaActual.tamano" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <option value="Mediana">Mediana ($120)</option>
+          <option value="Grande">Grande ($160)</option>
+          <option value="Familiar">Familiar ($200)</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Ingredientes</label>
+        <input type="text" [(ngModel)]="pizzaActual.ingredientes" placeholder="Ej. Peperoni, Champiñones" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-600 mb-1">Cantidad</label>
+        <input type="number" [(ngModel)]="pizzaActual.cantidad" min="1" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+    </div>
+
+    <button (click)="agregarPizza()" class="w-full bg-purple-700 text-white font-medium py-2 px-4 rounded-md hover:bg-purple-800 transition">
+      + Agregar Pizza al Pedido
+    </button>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md mb-6 border border-slate-200">
+    <h3 class="text-lg font-semibold text-slate-700 mb-4">3. Detalle de Pizzas en la Orden</h3>
+    
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">TAMAÑO</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">INGREDIENTES</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">CANT.</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">SUBTOTAL</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ACCIONES</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-slate-200">
+          <tr *ngFor="let pizza of listaPizzasDetalle; let i = index">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ pizza.tamano }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ pizza.ingredientes }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ pizza.cantidad }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">${{ pizza.subtotal }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <button (click)="quitarPizza(i)" class="bg-red-700 text-white px-3 py-1 rounded text-xs hover:bg-red-800 transition">Quitar</button>
+            </td>
+          </tr>
+          <tr *ngIf="listaPizzasDetalle.length === 0">
+            <td colspan="5" class="px-6 py-4 text-center text-sm text-slate-400">No hay pizzas agregadas a la orden.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 flex justify-between items-center">
+      <h2 class="text-xl font-bold text-slate-800">Total del Pedido: ${{ calcularTotal() }}</h2>
+      <button (click)="guardarPedido()" class="bg-sky-900 text-white font-semibold py-2 px-6 rounded-lg hover:bg-sky-950 transition shadow">
+        {{ idPedidoEnEdicion !== null ? 'Actualizar Pedido' : 'Terminar y Guardar Pedido' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
+      <h2 class="text-xl font-semibold text-slate-700">4. Pedidos Registrados en el Sistema</h2>
+      <div class="flex items-center gap-3">
+        <span class="text-xs text-slate-500 italic">dar clic para actualizar vista</span>
+        <button (click)="cargarPedidos()" class="bg-slate-200 text-slate-700 px-3 py-1 rounded text-sm hover:bg-slate-300 transition">Actualizar Lista</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-100">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Cliente</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Teléfono</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Dirección</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Total Pedido</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-slate-200">
+          <tr *ngFor="let p of listaPedidosRegistrados">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ p.id || p.pedido_id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ p.nombre_cliente }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ p.telefono }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ p.direccion }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-800">${{ p.total_pedido || p.total }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm flex gap-1 items-center">
+              <button (click)="verDetallePedido(p)" class="bg-teal-600 text-white px-2 py-1 rounded text-xs hover:bg-teal-700 transition">Detalle</button>
+              <button (click)="cargarPedidoParaEditar(p)" class="bg-amber-600 text-white px-2 py-1 rounded text-xs hover:bg-amber-700 transition">Editar</button>
+              <button (click)="eliminarPedido(p.id || p.pedido_id)" class="bg-red-700 text-white px-2 py-1 rounded text-xs hover:bg-red-800 transition">Eliminar</button>
+            </td>
+          </tr>
+          <tr *ngIf="listaPedidosRegistrados.length === 0">
+            <td colspan="6" class="px-6 py-4 text-center text-sm text-slate-400">No hay registros cargados o la lista está vacía.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL FLOTANTE DE DETALLE DE PEDIDO -->
+  <div *ngIf="pedidoSeleccionado" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 border border-slate-200 animate-fadeIn">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200">
+        <h3 class="text-lg font-bold text-slate-800">Detalle del Pedido #{{ pedidoSeleccionado.id || pedidoSeleccionado.pedido_id }}</h3>
+        <button (click)="cerrarModalDetalle()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+      </div>
+
+      <div class="mb-4 text-sm text-slate-600 space-y-1">
+        <p><strong>Cliente:</strong> {{ pedidoSeleccionado.nombre_cliente }}</p>
+        <p><strong>Teléfono:</strong> {{ pedidoSeleccionado.telefono }}</p>
+        <p><strong>Dirección:</strong> {{ pedidoSeleccionado.direccion }}</p>
+      </div>
+
+      <h4 class="text-sm font-semibold text-slate-700 mb-2 uppercase tracking-wide">Pizzas solicitadas:</h4>
+      <div class="max-h-48 overflow-y-auto mb-4 border border-slate-200 rounded">
+        <table class="min-w-full divide-y divide-slate-200 text-xs">
+          <thead class="bg-slate-100">
+            <tr>
+              <th class="px-3 py-2 text-left font-medium text-slate-500">Tamaño</th>
+              <th class="px-3 py-2 text-left font-medium text-slate-500">Ingredientes</th>
+              <th class="px-3 py-2 text-left font-medium text-slate-500">Cant.</th>
+              <th class="px-3 py-2 text-left font-medium text-slate-500">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 bg-white">
+            <tr *ngFor="let det of pedidoSeleccionado.pizzas">
+              <td class="px-3 py-2 text-slate-700">{{ det.tamano }}</td>
+              <td class="px-3 py-2 text-slate-700">{{ det.ingredientes }}</td>
+              <td class="px-3 py-2 text-slate-700">{{ det.cantidad || det.num_pizza }}</td>
+              <td class="px-3 py-2 text-slate-700">${{ det.subtotal }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-between items-center pt-3 border-t border-slate-200">
+        <span class="font-bold text-slate-800 text-base">Total: ${{ pedidoSeleccionado.total_pedido || pedidoSeleccionado.total }}</span>
+        <button (click)="cerrarModalDetalle()" class="bg-slate-700 text-white px-4 py-2 rounded text-sm hover:bg-slate-800 transition">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
