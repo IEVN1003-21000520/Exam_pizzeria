@@ -1,3 +1,12 @@
+Grupo: IEVN1003
+
+Nombre: González Luna Araceli del Rocio
+
+Correo: rosilunna19@gmail.com
+
+Teléfono: 477 474 4517
+
+
 # ExamPizzeria
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.8.
